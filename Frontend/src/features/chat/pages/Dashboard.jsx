@@ -1,6 +1,9 @@
 import React ,{useEffect,useState}from 'react'
 import { useSelector } from 'react-redux'
 import { useChat } from '../hooks/useChat'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
 
 const dummyChats = [
   { id: 1, title: 'Introduction to React Hooks' },
@@ -17,7 +20,8 @@ const Dashboard = () => {
   const currentChatId = useSelector((state) => state.chat.currentChatId)
    
     useEffect(()=>{
-        chat.initializeSocketConnection()
+        chat.initializeSocketConnection(),
+        chat.handleGetChats()
     },[])
 
     const handleSubmitMessage = (event) => {
@@ -31,6 +35,11 @@ const Dashboard = () => {
     chat.handleSendMessage({ message: trimmedMessage, chatId: currentChatId })
     setChatInput('')
   }
+
+  const openChat = (chatId) => {
+    chat.handleOpenChat(chatId,chats)
+  }
+
 
   return (
     <main className='min-h-screen w-full bg-[#07090f] p-3 text-white md:p-5'>
