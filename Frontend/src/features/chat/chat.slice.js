@@ -38,13 +38,31 @@ const chatSlice = createSlice({
         },
         setError(state,action){
             state.error = action.payload
+        },
+        removeChat(state, action) {
+            const chatId = action.payload;
+            delete state.chats[chatId];
+            if (state.currentChatId === chatId) {
+                state.currentChatId = null;
+            }
+        },
+        replaceChatId(state, action) {
+            const { oldId, newId } = action.payload;
+            if (state.chats[oldId]) {
+                state.chats[newId] = state.chats[oldId];
+                state.chats[newId].id = newId;
+                delete state.chats[oldId];
+            }
+            if (state.currentChatId === oldId) {
+                state.currentChatId = newId;
+            }
         }
 
     }
     
 })
 
-export const {setChats,setCurrentChatId,setLoading,setError,createNewChat,addNewMessage,addMessages} = chatSlice.actions
+export const {setChats,setCurrentChatId,setLoading,setError,createNewChat,addNewMessage,addMessages,removeChat,replaceChatId} = chatSlice.actions
 
 export default chatSlice.reducer
 

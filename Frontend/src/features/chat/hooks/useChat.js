@@ -1,6 +1,6 @@
 import { initializeSocketConnection } from "../service/chat.socket";
 import { sendMessage, getChats, getMessages, deleteChat } from "../service/chat.api";
-import { setChats, setCurrentChatId, setError, setLoading, createNewChat, addNewMessage, addMessages } from "../chat.slice";
+import { setChats, setCurrentChatId, setError, setLoading, createNewChat, addNewMessage, addMessages, removeChat, replaceChatId } from "../chat.slice";
 import { useDispatch } from "react-redux";
 
 
@@ -10,69 +10,128 @@ export const useChat = () => {
 
 
     async function handleSendMessage({ message, chatId }) {
-        dispatch(setLoading(true))
-        const data = await sendMessage({ message, chatId })
-        const { chat, aiMessage } = data
-        if (!chatId)
+        let activeChatId = chatId;
+        const isNewChat = !chatId;
+
+        // 1. Optimistic Update: Create chat or add message immediately
+        if (isNewChat) {
+            activeChatId = `temp-${Date.now()}`;
             dispatch(createNewChat({
-                chatId: chat._id,
-                title: chat.title,
-            }))
+                chatId: activeChatId,
+                title: message.substring(0, 30) + (message.length > 30 ? "..." : ""),
+            }));
+            dispatch(setCurrentChatId(activeChatId));
+        }
+
         dispatch(addNewMessage({
-            chatId: chatId || chat._id,
+            chatId: activeChatId,
             content: message,
             role: "user",
-        }))
-        dispatch(addNewMessage({
-            chatId: chatId || chat._id,
-            content: aiMessage.content,
-            role: aiMessage.role,
-        }))
-        dispatch(setCurrentChatId(chat._id))
+        }));
+
+        try {
+            dispatch(setLoading(true))
+            const data = await sendMessage({ message, chatId: isNewChat ? null : chatId })
+            
+            if (!data || !data.chat) {
+                console.error("No chat data received from server");
+                return;
+            }
+
+            const { chat, aiMessage } = data
+
+            // 2. If it was a new chat, swap temp ID for real ID
+            if (isNewChat) {
+                dispatch(replaceChatId({ oldId: activeChatId, newId: chat._id }));
+                activeChatId = chat._id;
+            }
+
+            // 3. Add AI message
+            if (aiMessage) {
+                dispatch(addNewMessage({
+                    chatId: activeChatId,
+                    content: aiMessage.content,
+                    role: aiMessage.role,
+                }))
+            }
+        } catch (error) {
+            console.error("Failed to send message:", error)
+            // Optional: Handle cleanup of optimistic message on error
+        } finally {
+            dispatch(setLoading(false))
+        }
     }
 
     async function handleGetChats() {
-        dispatch(setLoading(true))
-        const data = await getChats()
-        const { chats } = data
-        dispatch(setChats(chats.reduce((acc, chat) => {
-            acc[ chat._id ] = {
-                id: chat._id,
-                title: chat.title,
-                messages: [],
-                lastUpdated: chat.updatedAt,
-            }
-            return acc
-        }, {})))
-        dispatch(setLoading(false))
+        try {
+            dispatch(setLoading(true))
+            const data = await getChats()
+            const chats = data?.chats || []
+            
+            dispatch(setChats(chats.reduce((acc, chat) => {
+                acc[ chat._id ] = {
+                    id: chat._id,
+                    title: chat.title,
+                    messages: [],
+                    lastUpdated: chat.updatedAt,
+                }
+                return acc
+            }, {})))
+        } catch (error) {
+            console.error("Failed to get chats:", error)
+        } finally {
+            dispatch(setLoading(false))
+        }
     }
 
     async function handleOpenChat(chatId, chats) {
+        if (!chatId || !chats || !chats[ chatId ]) return;
 
-        console.log(chats[ chatId ]?.messages.length)
+        const currentChat = chats[ chatId ];
 
-        if (chats[ chatId ]?.messages.length === 0) {
-            const data = await getMessages(chatId)
-            const { messages } = data
+        if (!currentChat.messages || currentChat.messages.length === 0) {
+            try {
+                const data = await getMessages(chatId)
+                const messages = data?.messages || []
 
-            const formattedMessages = messages.map(msg => ({
-                content: msg.content,
-                role: msg.role,
-            }))
+                const formattedMessages = messages.map(msg => ({
+                    content: msg.content,
+                    role: msg.role,
+                }))
 
-            dispatch(addMessages({
-                chatId,
-                messages: formattedMessages,
-            }))
+                dispatch(addMessages({
+                    chatId,
+                    messages: formattedMessages,
+                }))
+            } catch (error) {
+                console.error("Failed to load messages:", error)
+            }
         }
         dispatch(setCurrentChatId(chatId))
+    }
+
+    async function handleDeleteChat(chatId) {
+        try {
+            await deleteChat(chatId)
+            dispatch(removeChat(chatId))
+        } catch (error) {
+            console.error("Failed to delete chat:", error)
+        }
+    }
+
+    function handleNewChat() {
+        dispatch(setCurrentChatId(null))
     }
 
     return {
         initializeSocketConnection,
         handleSendMessage,
         handleGetChats,
-        handleOpenChat
+        handleOpenChat,
+        handleDeleteChat,
+        handleNewChat
     }
 
 }
+
+
