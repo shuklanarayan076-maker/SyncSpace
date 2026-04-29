@@ -16,7 +16,7 @@ export const searchInternet = async ({query,focus = "web"}) =>{
     const domains = focusDomains[focus] || []
     const results = await tavily.search(query,{
         maxResults:5,
-        searchDepth:"advanced",
+        searchDepth: focus === "academic" ? "advanced" : "basic",
         ...(domains.length>0 && {includeDomains:domains})
     })
 
