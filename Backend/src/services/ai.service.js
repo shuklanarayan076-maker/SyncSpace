@@ -66,7 +66,12 @@ export async function generateResponse(messages,focus= "web"){
    messages: formatMessages(messages,focus)
   })
 
-  return response.messages[response.messages.length-1].content
+  const lastMessage = response.messages?.[response.messages.length - 1];
+  if (!lastMessage || !lastMessage.content) {
+    throw new Error("AI failed to generate a response. Please try again.");
+  }
+
+  return lastMessage.content;
 }
 
 export async function generateCompareResponse(messages,focus = "web"){
@@ -76,9 +81,16 @@ export async function generateCompareResponse(messages,focus = "web"){
     mistralAgent.invoke({messages: formatted})
   ])
 
+  const llamaContent = llamaRes.messages?.[llamaRes.messages.length - 1]?.content;
+  const mixtralContent = mixtralRes.messages?.[mixtralRes.messages.length - 1]?.content;
+
+  if (!llamaContent || !mixtralContent) {
+    throw new Error("One or more AI models failed to respond. Please try again.");
+  }
+
   return {
-    gemini : llamaRes.messages[llamaRes.messages.length-1].content,
-    mistral : mixtralRes.messages[mixtralRes.messages.length-1].content
+    gemini : llamaContent,
+    mistral : mixtralContent
   }
 }
 
