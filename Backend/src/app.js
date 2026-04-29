@@ -36,10 +36,19 @@ app.use("/api/chats",chatRouter)
 app.use(express.static(path.join(__dirname, "../dist")))
 
 
-app.get("/{*path}", (req, res) => {
+app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../dist", "index.html"))
 })
 
 
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error("Global error:", err);
+    res.status(err.status || 500).json({
+        message: err.message || "Internal server error",
+        success: false
+    });
+});
 
 export default app

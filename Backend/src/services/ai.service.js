@@ -54,8 +54,10 @@ function formatMessages(messages,focus = "web"){
     ),
     ...messages.map(msg =>{
       if(msg.role === "user") return new HumanMessage(msg.content)
-      else if(msg.role === "ai") return new AIMessage(msg.content)
-    })
+      const aiRoles = ["ai", "gemini", "mistral", "pro", "con"]
+      if(aiRoles.includes(msg.role)) return new AIMessage(msg.content)
+      return null;
+    }).filter(msg => msg !== null)
   ]
 }
 
@@ -75,7 +77,7 @@ export async function generateCompareResponse(messages,focus = "web"){
   ])
 
   return {
-    gemini : llamaRes.messages[geminiRes.messages.length-1].text,
+    gemini : llamaRes.messages[llamaRes.messages.length-1].text,
     mistral : mixtralRes.messages[mistralRes.messages.length-1].text
   }
 }
