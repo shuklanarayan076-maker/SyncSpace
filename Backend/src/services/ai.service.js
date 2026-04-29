@@ -102,17 +102,16 @@ export async function generateCompareResponse(messages, focus = "web") {
 
 export async function generateDebateResponse(messages, focus = "web") {
   try {
-    const lastMsg = messages[messages.length - 1];
-    const userQuery = lastMsg ? lastMsg.content : "";
+    const formatted = formatMessages(messages, focus);
     
     const [proRes, conRes] = await Promise.all([
       mainModel.invoke([
-        new SystemMessage(`You are a skilled debater. Focus: ${focus}. Argue strongly FOR the topic.`),
-        new HumanMessage(userQuery)
+        new SystemMessage(`You are a skilled debater in ${focus} mode. Your goal is to provide a strong, evidence-based argument FOR the user's position or the primary topic of this conversation. Be persuasive and structured.`),
+        ...formatted.slice(1) // Include all messages except the default system message
       ]),
       compareModel.invoke([
-        new SystemMessage(`You are a skilled debater. Focus: ${focus}. Argue strongly AGAINST the topic.`),
-        new HumanMessage(userQuery)
+        new SystemMessage(`You are a skilled debater in ${focus} mode. Your goal is to provide a strong, evidence-based argument AGAINST the user's position or the primary topic of this conversation. Be critical, find flaws in the logic, and present the opposing viewpoint.`),
+        ...formatted.slice(1)
       ])
     ]);
 
