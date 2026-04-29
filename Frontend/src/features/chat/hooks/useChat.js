@@ -12,7 +12,7 @@ export const useChat = () => {
 
     async function handleSendMessage({ message, chatId, mode = "normal",focus = "web"}) {
         let activeChatId = chatId;
-        const isNewChat = !chatId;
+        const isNewChat = !chatId || (typeof chatId === 'string' && chatId.startsWith('temp-'));
 
         // 1. Optimistic Update: Create chat or add message immediately
         if (isNewChat) {
