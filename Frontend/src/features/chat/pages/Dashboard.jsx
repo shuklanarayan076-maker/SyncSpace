@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useChat } from '../hooks/useChat';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Menu } from 'lucide-react';
 
 // Modular Components
 import Sidebar from '../components/Sidebar';
@@ -17,6 +18,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const [mode, setMode] = useState("normal");
     const [focus, setFocus] = useState("web");
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
         chat.initializeSocketConnection();
@@ -48,6 +50,14 @@ const Dashboard = () => {
 
     return (
         <main className="flex h-screen w-full bg-bg-primary text-white font-sans overflow-hidden">
+            {/* Hamburger button — mobile only */}
+            <button
+                onClick={() => setSidebarOpen(true)}
+                className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-xl bg-bg-secondary border border-border-subtle text-text-muted hover:text-white hover:bg-white/10 transition-all shadow-lg"
+            >
+                <Menu className="w-5 h-5" />
+            </button>
+
             {/* Sidebar with logic */}
             <Sidebar 
                 onNewChat={handleNewChat}
@@ -55,6 +65,8 @@ const Dashboard = () => {
                 onDeleteChat={handleDeleteChat}
                 currentChatId={currentChatId}
                 onLogout={handleLogout}
+                isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
             />
 
             {/* Main Content Area */}

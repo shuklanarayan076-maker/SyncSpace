@@ -292,7 +292,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                     className="max-w-3xl mx-auto relative glass-morphism p-2 rounded-3xl shadow-2xl border-white/10 shadow-black/40 focus-within:border-accent/30 focus-within:ring-4 focus-within:ring-accent/5 transition-all"
                 >
                     {/* Focus Mode Selector */}
-                    <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2">
+                    <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2 overflow-x-auto scrollbar-none">
                         {[
                             { id: 'web', label: 'Web', icon: Globe },
                             { id: 'news', label: 'News', icon: Newspaper },

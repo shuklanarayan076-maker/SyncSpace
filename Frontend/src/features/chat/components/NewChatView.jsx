@@ -47,7 +47,7 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                         className="relative glass-morphism p-2 rounded-[28px] shadow-2xl border-white/10 hover:border-white/20 transition-all focus-within:border-accent/40 focus-within:ring-4 focus-within:ring-accent/10"
                     >
                         {/* Focus Mode Selector */}
-                        <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2">
+                        <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2 overflow-x-auto scrollbar-none">
                             {[
                                 { id: 'web', label: 'Web', icon: Globe },
                                 { id: 'news', label: 'News', icon: Newspaper },
