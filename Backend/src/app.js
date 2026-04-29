@@ -25,9 +25,6 @@ app.use(cors({
 
 
 
-app.get("/", (req,res)=>{
-    res.json({message:"welcome to page"})
-})
 
 app.use("/api/auth",authRouter)
 app.use("/api/chats",chatRouter)
