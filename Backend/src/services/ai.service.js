@@ -88,24 +88,30 @@ export async function generateCompareResponse(messages, focus = "web") {
 export async function generateDebateResponse(messages, focus = "web") {
   try {
     const formatted = formatMessages(messages, focus);
-    const [proRes, conRes] = await Promise.all([
-      mainModel.invoke([
-        new SystemMessage(`Argue FOR the topic. Focus: ${focus}.`),
-        ...formatted.slice(1)
-      ]),
-      fastModel.invoke([
-        new SystemMessage(`Argue AGAINST the topic. Focus: ${focus}.`),
-        ...formatted.slice(1)
-      ])
+    const historyWithoutSystem = formatted.slice(1);
+    
+    // Call sequentially to avoid rate limits/concurrency issues
+    const proRes = await mainModel.invoke([
+      new SystemMessage(`You are a skilled debater. Argue strongly FOR the topic. Focus: ${focus}.`),
+      ...historyWithoutSystem
     ]);
+
+    const conRes = await fastModel.invoke([
+      new SystemMessage(`You are a skilled debater. Argue strongly AGAINST the topic. Focus: ${focus}.`),
+      ...historyWithoutSystem
+    ]);
+
+    if (!proRes.content || !conRes.content) {
+      throw new Error("One or more debaters failed to provide an argument.");
+    }
 
     return {
       pro: proRes.content,
       con: conRes.content
     };
   } catch (error) {
-    console.error("Debate Error:", error);
-    throw new Error("Debate mode failed.");
+    console.error("Debate Mode Error:", error);
+    throw new Error(`Debate Service Error: ${error.message}`);
   }
 }
 
