@@ -7,14 +7,18 @@ export async function sendMessage(req,res){
     try {
         const {message,chat:chatId, mode= "normal",focus = "web"} = req.body;
 
-        let titlePromise = null, chat = null;
+        let chat = null;
+        let isNewChat = false;
          
         if (!chatId) {
-            // Start title generation in background
-            titlePromise = generateChatTitle(message, focus);
+            isNewChat = true;
             chat = await chatModel.create({
                 user: req.user.id,
-                title: "New Chat..." // Placeholder until promise resolves
+                title: "New Chat..."
+            });
+            // FIRE AND FORGET: Generate title in background without awaiting
+            generateChatTitle(message, focus).then(title => {
+                chatModel.findByIdAndUpdate(chat._id, { title }).catch(console.error);
             });
         } else {
             chat = await chatModel.findOne({ _id: chatId, user: req.user.id });
@@ -23,86 +27,63 @@ export async function sendMessage(req,res){
             }
         }
 
-           const userMessage = await messageModel.create({
-            chat:chatId || chat._id,
-            content:message,
-            role:"user"
-        })
+        // Save User Message
+        const userMessage = await messageModel.create({
+            chat: chat._id,
+            content: message,
+            role: "user",
+            focus
+        });
 
-        const messages = await messageModel.find({chat:chatId || chat._id})
-
-        // Helper function to finalize title if needed
-        const finalizeTitle = async () => {
-            if (titlePromise) {
-                const t = await titlePromise;
-                await chatModel.findByIdAndUpdate(chat._id, { title: t });
-                return t;
-            }
-            return chat.title;
-        };
+        const history = await messageModel.find({ chat: chat._id });
 
          if (mode === "compare"){
-            const results = await generateCompareResponse(messages,focus)
-            const geminiMessage = await messageModel.create({
-                chat:chatId || chat._id,
-                content: results.gemini,
-                role: "gemini"
-            })
-            const mistralMessage = await messageModel.create({
-                chat:chatId || chat._id,
-                content: results.mistral,
-                role: "mistral"
-            })
-            const finalTitle = await finalizeTitle();
+            const results = await generateCompareResponse(history, focus);
+            
+            const [geminiMsg, mistralMsg] = await Promise.all([
+                messageModel.create({ chat: chat._id, content: results.gemini, role: "gemini", focus }),
+                messageModel.create({ chat: chat._id, content: results.mistral, role: "mistral", focus })
+            ]);
+
             return res.status(201).json({
-                title: finalTitle,
                 chat,
-                geminiMessage,
-                mistralMessage,
+                geminiMessage: geminiMsg,
+                mistralMessage: mistralMsg,
                 mode: "compare"
-            })
+            });
          }
 
          if (mode === "debate"){
-            const results = await generateDebateResponse(messages, focus)
-            const proMessage = await messageModel.create({
-                chat:chatId || chat._id,
-                content: results.pro,
-                role: "pro"
-            })
-           
+            const results = await generateDebateResponse(history, focus);
+            
+            const [proMsg, conMsg] = await Promise.all([
+                messageModel.create({ chat: chat._id, content: results.pro, role: "pro", focus }),
+                messageModel.create({ chat: chat._id, content: results.con, role: "con", focus })
+            ]);
 
-            const conMessage = await messageModel.create({
-                chat:chatId || chat._id,
-                content: results.con,
-                role: "con"
-            })
-
-            const finalTitle = await finalizeTitle();
             return res.status(201).json({
-                title: finalTitle,
                 chat,
-                proMessage,
-                conMessage,
+                proMessage: proMsg,
+                conMessage: conMsg,
                 mode: "debate"
-            })
+            });
          }
 
-            const result = await generateResponse(messages,focus)
-             const aiMessage = await messageModel.create({
-            chat:chatId || chat._id,
-            content:result,
-            role:"ai"
-        })
-        
-        const finalTitle = await finalizeTitle();
+        // Normal Mode
+        const result = await generateResponse(history, focus);
+        const aiMessage = await messageModel.create({
+            chat: chat._id,
+            content: result,
+            role: "ai",
+            focus
+        });
 
-        res.status(201).json({
-            title: finalTitle,
+        return res.status(201).json({
             chat,
             aiMessage,
-            mode : "normal"
-        })
+            mode: "normal"
+        });
+
     } catch (error) {
         console.error("SendMessage error:", error);
         res.status(500).json({
@@ -116,7 +97,7 @@ export async function sendMessage(req,res){
 export async function getChats(req,res){
     try {
         const user  = req.user
-        const chats = await chatModel.find({user:user.id})
+        const chats = await chatModel.find({user:user.id}).sort({ updatedAt: -1 })
         res.status(200).json({
             message:"Chats fetched successfully",
             chats
@@ -140,7 +121,7 @@ export async function getMessages(req,res){
                 message:"Chat not found",
             })
         }
-        const messages = await messageModel.find({chat:chatId})
+        const messages = await messageModel.find({chat:chatId}).sort({ createdAt: 1 })
 
         res.status(200).json({
             message:"Messages fetched successfully",
