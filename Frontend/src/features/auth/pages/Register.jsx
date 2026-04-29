@@ -32,10 +32,10 @@ const Register = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="w-full max-w-[440px] z-10"
+                className="w-full max-w-110 z-10"
             >
-                <div className="glass-morphism p-8 md:p-10 rounded-[32px] shadow-2xl space-y-8 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
+                <div className="glass-morphism p-8 md:p-10 rounded-4xl shadow-2xl space-y-8 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-accent/50 to-transparent" />
 
                     <div className="text-center space-y-2">
                         <motion.h2

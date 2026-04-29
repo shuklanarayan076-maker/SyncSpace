@@ -13,7 +13,17 @@ export function useAuth() {
             dispatch(setLoading(true))
             const data = await register({ email, username, password })
         } catch (error) {
-            dispatch(setError(error.response?.data?.message || "Registration failed"))
+            // Handle validation errors
+            const errorData = error.response?.data;
+            let errorMessage = "Registration failed";
+            
+            if (errorData?.errors && Array.isArray(errorData.errors)) {
+                errorMessage = errorData.errors.map(e => e.msg).join(", ");
+            } else if (errorData?.message) {
+                errorMessage = errorData.message;
+            }
+            
+            dispatch(setError(errorMessage))
         } finally {
             dispatch(setLoading(false))
         }

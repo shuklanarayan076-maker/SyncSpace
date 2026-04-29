@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Bookmark, MoreHorizontal, ArrowUp, Globe, Plus, Newspaper, GraduationCap, MessagesSquare } from 'lucide-react';
+import { Share2, Bookmark, MoreHorizontal, ArrowUp, Globe, Newspaper, GraduationCap, MessagesSquare } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -253,7 +253,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
             {/* Header / Actions */}
             <div className="h-16 flex items-center justify-between px-6 border-b border-border-subtle bg-bg-primary/80 backdrop-blur-md sticky top-0 z-10 w-full">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-sm font-semibold truncate max-w-[200px] md:max-w-md">
+                    <h2 className="text-sm font-semibold truncate max-w-50 md:max-w-md">
                         {messages[0]?.content.substring(0, 40) || "New Thread"}...
                     </h2>
                 </div>
@@ -286,7 +286,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
             </div>
 
             {/* Fixed Bottom Input */}
-            <div className="absolute bottom-0 left-0 w-full p-4 md:p-8 bg-gradient-to-t from-bg-primary via-bg-primary to-transparent">
+            <div className="absolute bottom-0 left-0 w-full p-4 md:p-8 bg-linear-to-t from-bg-primary via-bg-primary to-transparent">
                 <form 
                     onSubmit={handleSubmit}
                     className="max-w-3xl mx-auto relative glass-morphism p-2 rounded-3xl shadow-2xl border-white/10 shadow-black/40 focus-within:border-accent/30 focus-within:ring-4 focus-within:ring-accent/5 transition-all"
@@ -303,13 +303,12 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                                 key={modeItem.id}
                                 type="button"
                                 onClick={() => setFocus(modeItem.id)}
-                                className={`flex items-center gap-2 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${
-                                    focus === modeItem.id 
-                                        ? 'bg-accent/10 text-accent border border-accent/20' 
-                                        : 'text-text-muted hover:text-white hover:bg-white/5 border border-transparent'
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${  focus === modeItem.id 
+                                        ? 'bg-accent text-bg-secondary border border-accent shadow-lg shadow-accent/20' 
+                                        : 'text-text-muted hover:text-white hover:bg-white/10 border border-white/10'
                                 }`}
                             >
-                                <modeItem.icon className="w-3 h-3" />
+                                <modeItem.icon className="w-3.5 h-3.5" />
                                 {modeItem.label}
                             </button>
                         ))}
@@ -354,8 +353,12 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                                     Debate
                                 </button>
                             </div>
-                            <button type="button" className="p-2 text-text-muted hover:text-white hover:bg-white/5 rounded-full transition-all">
-                                <Plus className="w-4 h-4" />
+                            <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full transition-all ${focus && focus !== 'web' ? 'bg-accent/10 text-accent border border-accent/20 shadow-sm' : 'text-text-muted hover:text-white hover:bg-white/5 border border-transparent'}`}>
+                                {focus === 'news' ? <Newspaper className="w-3.5 h-3.5" /> : 
+                                 focus === 'academic' ? <GraduationCap className="w-3.5 h-3.5" /> : 
+                                 focus === 'forums' ? <MessagesSquare className="w-3.5 h-3.5" /> : 
+                                 <Globe className="w-3.5 h-3.5" />}
+                                {focus ? focus.charAt(0).toUpperCase() + focus.slice(1) : 'Focus'}
                             </button>
                         </div>
                         

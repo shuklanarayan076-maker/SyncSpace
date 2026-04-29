@@ -3,11 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Plus, 
     Home, 
-    Compass, 
-    Library, 
-    History, 
     Trash2, 
-    Settings, 
     LogOut,
     MessageSquare
 } from 'lucide-react';
@@ -35,9 +31,7 @@ const Sidebar = ({ onNewChat, onOpenChat, onDeleteChat, currentChatId, onLogout 
                     >
                         <Plus className="w-5 h-5 text-accent" />
                         <span className="text-sm font-medium">New Thread</span>
-                        <div className="ml-auto text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-text-muted group-hover:text-white transition-colors">
-                            Ctrl I
-                        </div>
+                        
                     </button>
                 </div>
 
@@ -45,8 +39,6 @@ const Sidebar = ({ onNewChat, onOpenChat, onDeleteChat, currentChatId, onLogout 
                 <nav className="space-y-1 mb-8">
                     {[
                         { icon: Home, label: 'Home', active: true },
-                        { icon: Compass, label: 'Discover' },
-                        { icon: Library, label: 'Library' },
                     ].map((item) => (
                         <button
                             key={item.label}
@@ -102,15 +94,12 @@ const Sidebar = ({ onNewChat, onOpenChat, onDeleteChat, currentChatId, onLogout 
 
                 {/* Footer / User */}
                 <div className="mt-auto pt-4 border-t border-border-subtle space-y-1">
-                    <button className="w-full flex items-center gap-3 px-4 py-2.5 text-text-muted hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                        <Settings className="w-5 h-5" />
-                        <span className="text-sm font-medium">Settings</span>
-                    </button>
+                    
                     <div 
                         onClick={onLogout}
                         className="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-2xl mt-2 cursor-pointer hover:bg-white/10 transition-all border border-white/5"
                     >
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent to-accent-hover flex items-center justify-center text-bg-secondary font-bold text-xs">
+                        <div className="w-8 h-8 rounded-full bg-linear-to-br from-accent to-accent-hover flex items-center justify-center text-bg-secondary font-bold text-xs">
                             {user?.username?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div className="flex-1 min-w-0">

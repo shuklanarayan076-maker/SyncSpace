@@ -24,20 +24,20 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
     return (
         <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden">
             {/* Background Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
 
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="w-full max-w-[800px] space-y-10 relative z-10"
+                className="w-full max-w-200 space-y-10 relative z-10"
             >
                 <div className="text-center space-y-4">
                     <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-white">
                         Where knowledge begins
                     </h1>
                     <p className="text-text-muted text-lg">
-                        Ask anything. Perplexity will search the web for you.
+                        Ask anything. Battle Arena will search the web for you.
                     </p>
                 </div>
 
@@ -109,13 +109,12 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                                         Debate
                                     </button>
                                 </div>
-                                <button type="button" className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-muted hover:text-white hover:bg-white/5 rounded-full transition-all">
-                                    <Globe className="w-3.5 h-3.5" />
-                                    Focus
-                                </button>
-                                <button type="button" className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-muted hover:text-white hover:bg-white/5 rounded-full transition-all">
-                                    <Plus className="w-3.5 h-3.5" />
-                                    Attach
+                                <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full transition-all ${focus && focus !== 'web' ? 'bg-accent/10 text-accent border border-accent/20 shadow-sm' : 'text-text-muted hover:text-white hover:bg-white/5 border border-transparent'}`}>
+                                    {focus === 'news' ? <Newspaper className="w-3.5 h-3.5" /> : 
+                                     focus === 'academic' ? <GraduationCap className="w-3.5 h-3.5" /> : 
+                                     focus === 'forums' ? <MessagesSquare className="w-3.5 h-3.5" /> : 
+                                     <Globe className="w-3.5 h-3.5" />}
+                                    {focus ? focus.charAt(0).toUpperCase() + focus.slice(1) : 'Focus'}
                                 </button>
                             </div>
                             
