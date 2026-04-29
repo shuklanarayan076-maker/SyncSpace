@@ -47,7 +47,7 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                         className="relative glass-morphism p-2 rounded-[28px] shadow-2xl border-white/10 hover:border-white/20 transition-all focus-within:border-accent/40 focus-within:ring-4 focus-within:ring-accent/10"
                     >
                         {/* Focus Mode Selector */}
-                        <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2 overflow-x-auto scrollbar-none">
+                        <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2 overflow-x-auto scrollbar-none snap-x">
                             {[
                                 { id: 'web', label: 'Web', icon: Globe },
                                 { id: 'news', label: 'News', icon: Newspaper },
@@ -58,7 +58,7 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                                     key={modeItem.id}
                                     type="button"
                                     onClick={() => setFocus(modeItem.id)}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                                    className={`flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all snap-start ${
                                         focus === modeItem.id 
                                             ? 'bg-accent/10 text-accent border border-accent/20' 
                                             : 'text-text-muted hover:text-white hover:bg-white/5 border border-transparent'
@@ -121,7 +121,7 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                             <button
                                 type="submit"
                                 disabled={!input.trim()}
-                                className="w-10 h-10 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg shadow-accent/20"
+                                className="flex-shrink-0 w-10 h-10 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg shadow-accent/20"
                             >
                                 <ArrowUp className="w-6 h-6" />
                             </button>

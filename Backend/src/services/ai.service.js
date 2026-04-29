@@ -66,7 +66,7 @@ export async function generateResponse(messages,focus= "web"){
    messages: formatMessages(messages,focus)
   })
 
-  return response.messages[response.messages.length-1].text
+  return response.messages[response.messages.length-1].content
 }
 
 export async function generateCompareResponse(messages,focus = "web"){
@@ -77,8 +77,8 @@ export async function generateCompareResponse(messages,focus = "web"){
   ])
 
   return {
-    gemini : llamaRes.messages[llamaRes.messages.length-1].text,
-    mistral : mixtralRes.messages[mistralRes.messages.length-1].text
+    gemini : llamaRes.messages[llamaRes.messages.length-1].content,
+    mistral : mixtralRes.messages[mixtralRes.messages.length-1].content
   }
 }
 
@@ -128,6 +128,6 @@ export async function generateChatTitle(message, focus = "web"){
       `)
   ])
 
-  return response.text
+  return response.content
 }
 

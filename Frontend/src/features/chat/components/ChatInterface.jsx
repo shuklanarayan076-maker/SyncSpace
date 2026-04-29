@@ -292,7 +292,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                     className="max-w-3xl mx-auto relative glass-morphism p-2 rounded-3xl shadow-2xl border-white/10 shadow-black/40 focus-within:border-accent/30 focus-within:ring-4 focus-within:ring-accent/5 transition-all"
                 >
                     {/* Focus Mode Selector */}
-                    <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2 overflow-x-auto scrollbar-none">
+                    <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 mb-2 overflow-x-auto scrollbar-none snap-x">
                         {[
                             { id: 'web', label: 'Web', icon: Globe },
                             { id: 'news', label: 'News', icon: Newspaper },
@@ -303,7 +303,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                                 key={modeItem.id}
                                 type="button"
                                 onClick={() => setFocus(modeItem.id)}
-                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${  focus === modeItem.id 
+                                className={`flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all snap-start ${  focus === modeItem.id 
                                         ? 'bg-accent text-bg-secondary border border-accent shadow-lg shadow-accent/20' 
                                         : 'text-text-muted hover:text-white hover:bg-white/10 border border-white/10'
                                 }`}
@@ -365,7 +365,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                         <button
                             type="submit"
                             disabled={!input.trim() || isLoading}
-                            className="w-8 h-8 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg"
+                            className="flex-shrink-0 w-8 h-8 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg"
                         >
                             <ArrowUp className="w-5 h-5" />
                         </button>
