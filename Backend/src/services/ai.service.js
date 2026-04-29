@@ -82,12 +82,13 @@ export async function generateCompareResponse(messages,focus = "web"){
   }
 }
 
-export async function generateDebateResponse(messages){
+export async function generateDebateResponse(messages, focus = "web"){
   const userQuery = messages[messages.length-1].content
   const [proRes,conRes] = await Promise.all([
     mainModel.invoke([
         new SystemMessage(`
           You are a skilled debater.
+          Focus Area: ${focus}.
           You Must argue strongly for the following topic.
           Give 3 strong points supporting your side.
           Be confident and persuasive.
@@ -98,6 +99,7 @@ export async function generateDebateResponse(messages){
   compareModel.invoke([
     new SystemMessage(`
     You are a skilled debater.
+    Focus Area: ${focus}.
     You Must argue strongly against the following topic.
     Give 3 strong points against your side.
     Be confident and persuasive.
@@ -113,12 +115,12 @@ export async function generateDebateResponse(messages){
   }
 }
 
-export async function generateChatTitle(message){
+export async function generateChatTitle(message, focus = "web"){
   const response = await mistralModel.invoke([
     new SystemMessage(`You are a helpful assistant that generates concise and descriptive titles for chat conversations.
+      The conversation focus area is ${focus}.
       User will provide you with the first message of chat conversation, and you will generate a title that captures the essence of the 
-      conversation in 2-4 words. The title should be clear,relevant and engaging, giving users a quick understanding of the 
-      chat's topic 
+      conversation in 2-4 words. The title should be clear,relevant and engaging. 
       `),
       new HumanMessage(`
         Generate a title for a chat conversation based on the following first message:

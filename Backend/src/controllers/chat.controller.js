@@ -9,12 +9,18 @@ export async function sendMessage(req,res){
 
         let title= null, chat = null;
          
-       if(!chatId){
-         title = await generateChatTitle(message)
-         chat = await chatModel.create({
-            user:req.user.id,
-            title
-        })}
+        if (!chatId) {
+            title = await generateChatTitle(message, focus);
+            chat = await chatModel.create({
+                user: req.user.id,
+                title
+            });
+        } else {
+            chat = await chatModel.findOne({ _id: chatId, user: req.user.id });
+            if (!chat) {
+                return res.status(403).json({ message: "Unauthorized or chat not found", success: false });
+            }
+        }
 
            const userMessage = await messageModel.create({
             chat:chatId || chat._id,
@@ -46,7 +52,7 @@ export async function sendMessage(req,res){
          }
 
          if (mode === "debate"){
-            const results = await generateDebateResponse(messages)
+            const results = await generateDebateResponse(messages, focus)
             const proMessage = await messageModel.create({
                 chat:chatId || chat._id,
                 content: results.pro,
