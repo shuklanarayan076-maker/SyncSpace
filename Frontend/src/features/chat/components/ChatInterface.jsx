@@ -89,7 +89,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
 
         return (
             <div className="prose prose-invert max-w-none text-[15px] md:text-base leading-relaxed text-white/90">
-                {isLast && isAiResponse ? (
+                {isLast && isAiResponse && message.isNew ? (
                     <Typewriter text={message.content} onComplete={scrollToBottom} />
                 ) : (
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
@@ -128,7 +128,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                 const isLastPair = i + 1 === messages.length - 1;
                 elements.push(
                     <motion.div
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={current.isNew || next?.isNew ? { opacity: 0, y: 10 } : false}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
                         key={`compare-${i}`}
@@ -170,7 +170,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                 const isLastPair = i + 1 === messages.length - 1;
                 elements.push(
                     <motion.div
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={current.isNew || next?.isNew ? { opacity: 0, y: 10 } : false}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
                         key={`debate-${i}`}
@@ -211,7 +211,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
             const isLastMessage = i === messages.length - 1;
             elements.push(
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={current.isNew ? { opacity: 0, y: 10 } : false}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
                     key={i}

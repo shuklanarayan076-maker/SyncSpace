@@ -53,7 +53,8 @@ export const useChat = () => {
                         chatId: activeChatId,
                         content: data.geminiMessage.content,
                         role: "gemini",
-                        focus: focus
+                        focus: focus,
+                        isNew: true
                     }))
                 }
                 if (data.mistralMessage) {
@@ -61,7 +62,8 @@ export const useChat = () => {
                         chatId: activeChatId,
                         content: data.mistralMessage.content,
                         role: "mistral",
-                        focus: focus
+                        focus: focus,
+                        isNew: true
                     }))
                 }
             } else if(mode === "debate"){
@@ -70,7 +72,8 @@ export const useChat = () => {
                         chatId: activeChatId,
                         content: data.proMessage.content,
                         role: "pro",
-                        focus: focus
+                        focus: focus,
+                        isNew: true
                     }))
 
                 }
@@ -79,7 +82,8 @@ export const useChat = () => {
                         chatId: activeChatId,
                         content: data.conMessage.content,
                         role: "con",
-                        focus: focus
+                        focus: focus,
+                        isNew: true
                     }))
                 }
 
@@ -88,7 +92,8 @@ export const useChat = () => {
                     chatId: activeChatId,
                     content: data.aiMessage.content,
                     role: data.aiMessage.role || "ai",
-                    focus: focus
+                    focus: focus,
+                    isNew: true
                 }))
             }
         } catch (error) {
