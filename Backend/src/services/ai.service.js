@@ -1,145 +1,142 @@
-
-import {HumanMessage,SystemMessage,AIMessage,tool,createAgent} from "langchain"
-import {ChatMistralAI} from "@langchain/mistralai"
-import {ChatGroq} from "@langchain/groq"
-import * as z from "zod"
+import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
+import { ChatMistralAI } from "@langchain/mistralai";
+import { ChatGroq } from "@langchain/groq";
 import { searchInternet } from "./internet.service.js";
-
 
 const mainModel = new ChatGroq({
   model: "llama-3.3-70b-versatile",
   apiKey: process.env.GROQ_API_KEY
-})
+});
 
 const compareModel = new ChatGroq({
   model: "llama-3.1-8b-instant",
   apiKey: process.env.GROQ_API_KEY
-})
+});
 
 const mistralModel = new ChatMistralAI({
   model: "mistral-small-latest",
   apiKey: process.env.MISTRAL_API_KEY
-})
+});
 
-const searchInternetTool = tool(
-  searchInternet,
+// Tool definition for search
+const tools = [
   {
     name: "searchInternet",
-    description:"use this tool to get the latest information from the internet",
-    schema: z.object({
-      query:z.string().describe("The search query to look up on the internet."),
-      focus: z.string().optional().describe("Focus area: web,new,academic,reddit")
-    })
+    description: "use this tool to get the latest information from the internet",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "The search query" },
+        focus: { type: "string", enum: ["web", "news", "academic", "forums"], description: "Focus area" }
+      },
+      required: ["query"]
+    }
   }
-)
+];
 
-const agent = createAgent({
-  model: mainModel,
-  tools:[searchInternetTool]
-})
+// Bind tools to models
+const mainModelWithTools = mainModel.bind({
+  functions: tools,
+  function_call: "auto"
+});
 
-const mistralAgent = createAgent({
-  model: compareModel,
-  tools:[searchInternetTool]
-})
-
-function formatMessages(messages,focus = "web"){
+function formatMessages(messages, focus = "web") {
   return [
     new SystemMessage(
-      `You are a helpful and precise assistant for answering questions.
-      If the question requires up-to-date information, use the searchInternet tool.
-      Current search focus mode: ${focus}.
-      When using searchInternet tool,always pass focus: "${focus}".
-     `
+      `You are a helpful and precise assistant. 
+      Current focus area: ${focus}.
+      If the user's question requires up-to-date info, use the searchInternet function.
+      Always try to provide a comprehensive answer.`
     ),
-    ...messages.map(msg =>{
-      if(msg.role === "user") return new HumanMessage(msg.content)
-      const aiRoles = ["ai", "gemini", "mistral", "pro", "con"]
-      if(aiRoles.includes(msg.role)) return new AIMessage(msg.content)
+    ...messages.map(msg => {
+      if (msg.role === "user") return new HumanMessage(msg.content);
+      const aiRoles = ["ai", "gemini", "mistral", "pro", "con"];
+      if (aiRoles.includes(msg.role)) return new AIMessage(msg.content);
       return null;
     }).filter(msg => msg !== null)
-  ]
+  ];
 }
 
-export async function generateResponse(messages,focus= "web"){
-  const response = await agent.invoke({
-   messages: formatMessages(messages,focus)
-  })
+export async function generateResponse(messages, focus = "web") {
+  try {
+    const formattedMessages = formatMessages(messages, focus);
+    const response = await mainModelWithTools.invoke(formattedMessages);
 
-  const lastMessage = response.messages?.[response.messages.length - 1];
-  if (!lastMessage || !lastMessage.content) {
-    throw new Error("AI failed to generate a response. Please try again.");
-  }
+    // Handle tool calls
+    if (response.additional_kwargs.function_call) {
+      const { name, arguments: argsString } = response.additional_kwargs.function_call;
+      if (name === "searchInternet") {
+        const args = JSON.parse(argsString);
+        const searchResult = await searchInternet({ query: args.query, focus: args.focus || focus });
+        
+        // Follow up with the search results
+        const finalRes = await mainModel.invoke([
+          ...formattedMessages,
+          response,
+          new HumanMessage(`Search Results: ${searchResult}\n\nBased on these results, please answer the user's original question.`)
+        ]);
+        return finalRes.content;
+      }
+    }
 
-  return lastMessage.content;
-}
-
-export async function generateCompareResponse(messages,focus = "web"){
-  const formatted = formatMessages(messages,focus)
-  const [llamaRes,mixtralRes] = await Promise.all([
-    agent.invoke({messages: formatted}),
-    mistralAgent.invoke({messages: formatted})
-  ])
-
-  const llamaContent = llamaRes.messages?.[llamaRes.messages.length - 1]?.content;
-  const mixtralContent = mixtralRes.messages?.[mixtralRes.messages.length - 1]?.content;
-
-  if (!llamaContent || !mixtralContent) {
-    throw new Error("One or more AI models failed to respond. Please try again.");
-  }
-
-  return {
-    gemini : llamaContent,
-    mistral : mixtralContent
+    return response.content;
+  } catch (error) {
+    console.error("AI Generation Error:", error);
+    throw new Error(`AI Logic Error: ${error.message}`);
   }
 }
 
-export async function generateDebateResponse(messages, focus = "web"){
-  const userQuery = messages[messages.length-1].content
-  const [proRes,conRes] = await Promise.all([
-    mainModel.invoke([
-        new SystemMessage(`
-          You are a skilled debater.
-          Focus Area: ${focus}.
-          You Must argue strongly for the following topic.
-          Give 3 strong points supporting your side.
-          Be confident and persuasive.
-          Do not mention the supporting side.
-          Do not use any tools or search the internet.`)
-          ,new HumanMessage(userQuery)
-  ]),
-  compareModel.invoke([
-    new SystemMessage(`
-    You are a skilled debater.
-    Focus Area: ${focus}.
-    You Must argue strongly against the following topic.
-    Give 3 strong points against your side.
-    Be confident and persuasive.
-    Do not mention the opposing side.
-    Do not use any tools or search the internet.`),
-    new HumanMessage(userQuery)
-  ])
-  ])
+export async function generateCompareResponse(messages, focus = "web") {
+  try {
+    const formatted = formatMessages(messages, focus);
+    const [llamaRes, mistralRes] = await Promise.all([
+      mainModel.invoke(formatted),
+      mistralModel.invoke(formatted)
+    ]);
 
-  return {
-    pro: proRes.content,
-    con: conRes.content
+    return {
+      gemini: llamaRes.content,
+      mistral: mistralRes.content
+    };
+  } catch (error) {
+    console.error("Compare Error:", error);
+    throw new Error(`Compare Mode Error: ${error.message}`);
   }
 }
 
-export async function generateChatTitle(message, focus = "web"){
-  const response = await mistralModel.invoke([
-    new SystemMessage(`You are a helpful assistant that generates concise and descriptive titles for chat conversations.
-      The conversation focus area is ${focus}.
-      User will provide you with the first message of chat conversation, and you will generate a title that captures the essence of the 
-      conversation in 2-4 words. The title should be clear,relevant and engaging. 
-      `),
-      new HumanMessage(`
-        Generate a title for a chat conversation based on the following first message:
-        "${message}"
-      `)
-  ])
+export async function generateDebateResponse(messages, focus = "web") {
+  try {
+    const userQuery = messages[messages.length - 1].content;
+    const [proRes, conRes] = await Promise.all([
+      mainModel.invoke([
+        new SystemMessage(`You are a skilled debater. Focus: ${focus}. Argue strongly FOR the topic.`),
+        new HumanMessage(userQuery)
+      ]),
+      compareModel.invoke([
+        new SystemMessage(`You are a skilled debater. Focus: ${focus}. Argue strongly AGAINST the topic.`),
+        new HumanMessage(userQuery)
+      ])
+    ]);
 
-  return response.content
+    return {
+      pro: proRes.content,
+      con: conRes.content
+    };
+  } catch (error) {
+    console.error("Debate Error:", error);
+    throw new Error(`Debate Mode Error: ${error.message}`);
+  }
 }
 
+export async function generateChatTitle(message, focus = "web") {
+  try {
+    const response = await compareModel.invoke([
+      new SystemMessage(`Generate a 2-4 word title for this chat. Focus: ${focus}.`),
+      new HumanMessage(message)
+    ]);
+    return response.content;
+  } catch (error) {
+    console.error("Title Generation Error:", error);
+    return "New Conversation"; // Safe fallback
+  }
+}
