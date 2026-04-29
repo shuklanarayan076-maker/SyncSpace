@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-     "build:prod": "vite build && mv dist ../backend/dist" ,
+     "build:prod": "vite build && mv dist ../Backend/dist" ,
     "lint": "eslint .",
     "preview": "vite preview"
   },
