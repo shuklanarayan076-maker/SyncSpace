@@ -4,7 +4,7 @@ import { sendEmail } from "../services/mail.service.js"
 
 
 export async function register(req, res) {
-
+  try{
     const { username, email, password } = req.body
 
     const isUserExist = await userModel.findOne(
@@ -36,6 +36,8 @@ export async function register(req, res) {
                     <p>If you did not create an account, please ignore this email.</p>
                     <p>Best regards,<br>The Perplexity Team</p>
             `
+    }).catch(err => {
+        console.error("Error sending email:", err);
     })
 
     res.status(201).json({
@@ -48,7 +50,14 @@ export async function register(req, res) {
         }
     });
 
-}
+}catch (err) {
+        console.error("Register error:", err)
+
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        })
+    }}
 
 export async function login(req, res) {
     const { email, password } = req.body
