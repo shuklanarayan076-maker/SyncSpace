@@ -1,7 +1,7 @@
 import {io} from "socket.io-client";
 
 export const initializeSocketConnection = () =>{
-    const socket = io('https://perplexity-o8nk.onrender.com',{
+    const socket = io('https://SyncSpace-o8nk.onrender.com',{
         withCredentials:true
     });
 

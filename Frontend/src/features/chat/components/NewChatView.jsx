@@ -58,7 +58,7 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                                     key={modeItem.id}
                                     type="button"
                                     onClick={() => setFocus(modeItem.id)}
-                                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all snap-start border-2 ${
+                                    className={`shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all snap-start border-2 ${
                                         focus === modeItem.id 
                                             ? 'bg-accent/10 text-accent border-accent shadow-[0_0_15px_rgba(32,201,151,0.2)]' 
                                             : 'text-text-muted hover:text-white hover:bg-white/5 border-white/10'
@@ -90,28 +90,28 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                                     <button 
                                         type="button"
                                         onClick={() => setMode("normal")}
-                                        className={`flex-shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "normal" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                        className={`shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "normal" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                     >
                                         Normal
                                     </button>
                                     <button 
                                         type="button"
                                         onClick={() => setMode("compare")}
-                                        className={`flex-shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "compare" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                        className={`shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "compare" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                     >
                                         Compare
                                     </button>
                                     <button 
                                         type="button"
                                         onClick={() => setMode("debate")}
-                                        className={`flex-shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "debate" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                        className={`shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "debate" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                     >
                                         Debate
                                     </button>
                                     <button 
                                         type="button"
                                         onClick={() => setMode("research")}
-                                        className={`flex-shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "research" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                        className={`shrink-0 px-2.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full transition-all ${mode === "research" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                     >
                                         Research
                                     </button>
@@ -128,7 +128,7 @@ const NewChatView = ({ onSendMessage, mode, setMode, focus, setFocus }) => {
                             <button
                                 type="submit"
                                 disabled={!input.trim()}
-                                className="flex-shrink-0 w-10 h-10 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg shadow-accent/20"
+                                className="shrink-0 w-10 h-10 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg shadow-accent/20"
                             >
                                 <ArrowUp className="w-6 h-6" />
                             </button>

@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 
 const Sidebar = ({ onNewChat, onOpenChat, onDeleteChat, currentChatId, onLogout, isOpen, onClose }) => {
     const chats = useSelector((state) => state.chat.chats);
-    const user = useSelector((state) => state.auth.user);
+    const user = useSelector((state) => state.auth.user); 
 
     const sidebarContent = (
         <div className="p-4 flex flex-col h-full">
@@ -21,9 +21,9 @@ const Sidebar = ({ onNewChat, onOpenChat, onDeleteChat, currentChatId, onLogout,
                 <div className="flex items-center justify-between px-2 py-1">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                            <span className="text-bg-secondary font-bold text-xl">P</span>
+                            <span className="text-bg-secondary font-bold text-xl">SS</span>
                         </div>
-                        <span className="text-xl font-semibold tracking-tight">Perplexity</span>
+                        <span className="text-xl font-semibold tracking-tight">SyncSpace</span>
                     </div>
                     {/* Close button — mobile only */}
                     <button

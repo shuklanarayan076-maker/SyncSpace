@@ -368,7 +368,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                                 key={modeItem.id}
                                 type="button"
                                 onClick={() => setFocus(modeItem.id)}
-                                className={`flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all snap-start border-2 ${
+                                className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all snap-start border-2 ${
                                     focus === modeItem.id 
                                         ? 'bg-accent/10 text-accent border-accent shadow-lg shadow-accent/20' 
                                         : 'text-text-muted hover:text-white hover:bg-white/10 border-white/10'
@@ -400,28 +400,28 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                                 <button 
                                      type="button"
                                      onClick={() => setMode("normal")}
-                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "normal" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                     className={`shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "normal" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                  >
                                      Normal
                                  </button>
                                  <button 
                                      type="button"
                                      onClick={() => setMode("compare")}
-                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "compare" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                     className={`shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "compare" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                  >
                                      Compare
                                  </button>
                                  <button 
                                      type="button"
                                      onClick={() => setMode("debate")}
-                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "debate" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                     className={`shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "debate" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                  >
                                      Debate
                                  </button>
                                  <button 
                                      type="button"
                                      onClick={() => setMode("research")}
-                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "research" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                     className={`shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "research" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
                                  >
                                      Research
                                  </button>
@@ -438,7 +438,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                         <button
                             type="submit"
                             disabled={!input.trim() || isLoading}
-                            className="flex-shrink-0 w-8 h-8 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg"
+                            className="shrink-0 w-8 h-8 bg-accent hover:bg-accent-hover disabled:bg-white/5 disabled:text-text-muted text-bg-secondary rounded-full flex items-center justify-center transition-all shadow-lg"
                         >
                             <ArrowUp className="w-5 h-5" />
                         </button>
