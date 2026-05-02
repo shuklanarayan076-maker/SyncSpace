@@ -396,36 +396,36 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                     
                     <div className="flex items-center justify-between px-4 pb-2">
                         <div className="flex items-center gap-1">
-                            <div className="flex bg-white/5 p-1 rounded-full border border-white/10 mr-2">
+                            <div className="flex bg-white/5 p-1 rounded-full border border-white/10 mr-1 overflow-x-auto scrollbar-none">
                                 <button 
-                                    type="button"
-                                    onClick={() => setMode("normal")}
-                                    className={`px-3 py-1 text-[10px] uppercase tracking-wider font-bold rounded-full transition-all ${mode === "normal" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
-                                >
-                                    💬 Normal
-                                </button>
-                                <button 
-                                    type="button"
-                                    onClick={() => setMode("compare")}
-                                    className={`px-3 py-1 text-[10px] uppercase tracking-wider font-bold rounded-full transition-all ${mode === "compare" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
-                                >
-                                    ⚖️ Compare
-                                </button>
-                                <button 
-                                    type="button"
-                                    onClick={() => setMode("debate")}
-                                    className={`px-3 py-1 text-[10px] uppercase tracking-wider font-bold rounded-full transition-all ${mode === "debate" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
-                                >
-                                    🥊 Debate
-                                </button>
-                                <button 
-                                    type="button"
-                                    onClick={() => setMode("research")}
-                                    className={`px-3 py-1 text-[10px] uppercase tracking-wider font-bold rounded-full transition-all ${mode === "research" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
-                                >
-                                    🔬 Research
-                                </button>
-                            </div>
+                                     type="button"
+                                     onClick={() => setMode("normal")}
+                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "normal" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                 >
+                                     Normal
+                                 </button>
+                                 <button 
+                                     type="button"
+                                     onClick={() => setMode("compare")}
+                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "compare" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                 >
+                                     Compare
+                                 </button>
+                                 <button 
+                                     type="button"
+                                     onClick={() => setMode("debate")}
+                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "debate" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                 >
+                                     Debate
+                                 </button>
+                                 <button 
+                                     type="button"
+                                     onClick={() => setMode("research")}
+                                     className={`flex-shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all ${mode === "research" ? "bg-accent text-bg-secondary shadow-sm" : "text-text-muted hover:text-white"}`}
+                                 >
+                                     Research
+                                 </button>
+                             </div>
                             <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full transition-all ${focus && focus !== 'web' ? 'bg-accent/10 text-accent border border-accent/20 shadow-sm' : 'text-text-muted hover:text-white hover:bg-white/5 border border-transparent'}`}>
                                 {focus === 'news' ? <Newspaper className="w-3.5 h-3.5" /> : 
                                  focus === 'academic' ? <GraduationCap className="w-3.5 h-3.5" /> : 
