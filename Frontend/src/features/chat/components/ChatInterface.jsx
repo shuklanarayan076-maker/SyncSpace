@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Bookmark, MoreHorizontal, ArrowUp, Globe, Newspaper, GraduationCap, MessagesSquare } from 'lucide-react';
+import { Share2, Bookmark, MoreHorizontal, ArrowUp, Globe, Newspaper, GraduationCap, MessagesSquare, Search } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
