@@ -111,7 +111,6 @@ const Sidebar = ({ onNewChat, onOpenChat, onDeleteChat, currentChatId, onLogout,
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{user?.username}</p>
-                        <p className="text-[10px] text-text-muted">Pro Plan</p>
                     </div>
                     <LogOut className="w-4 h-4 text-text-muted hover:text-white" />
                 </div>

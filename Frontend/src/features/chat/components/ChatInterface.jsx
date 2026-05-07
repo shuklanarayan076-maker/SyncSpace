@@ -293,8 +293,8 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, mode, setMode, focu
                 >
                     <div className={`flex items-start gap-4 ${current.role === 'user' ? 'flex-row-reverse' : ''}`}>
                         {current.role !== 'user' && current.role !== 'research' && (
-                            <div className="w-8 h-8 rounded-full bg-accent/20 text-accent flex items-center justify-center shrink-0 border border-accent/20 shadow-sm shadow-accent/5">
-                                P
+                            <div className="w-8 h-8 rounded-full bg-accent/20 text-accent flex items-center justify-center shrink-0 border border-accent/20 shadow-sm shadow-accent/5 text-[10px] font-bold">
+                                SS
                             </div>
                         )}
                         <div className={`flex flex-col space-y-4 ${current.role === 'user' ? 'items-end w-full' : 'flex-1 min-w-0'}`}>
